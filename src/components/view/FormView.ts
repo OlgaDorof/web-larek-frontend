@@ -58,11 +58,11 @@ export class FormView extends Component<IFormView> {
 
 	protected selectButton(pay: string) {
 		this._paymentButton.forEach((item) => {
-			item.classList.toggle('button_alt-active', item.name === pay);
+			this.toggleClass(item, 'button_alt-active', item.name === pay);
 		});
 	}
 
 	set errors(error: string) {
-		this._errors.textContent = error;
+		this.setText(this._errors, error);
 	}
 }

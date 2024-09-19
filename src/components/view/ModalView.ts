@@ -6,10 +6,9 @@ interface IModalData {
 	content: HTMLElement;
 }
 
-export class modalView extends Component<IModalData> {
+export class ModalView extends Component<IModalData> {
 	protected _closeButton: HTMLButtonElement;
 	protected _content: HTMLElement;
-	protected _wrapper: HTMLElement;
 
 	constructor(container: HTMLElement, protected events: IEvents) {
 		super(container);
@@ -19,8 +18,6 @@ export class modalView extends Component<IModalData> {
 			container
 		);
 		this._content = ensureElement<HTMLElement>('.modal__content', container);
-		this._wrapper = ensureElement<HTMLElement>('.page__wrapper');
-
 		this._closeButton.addEventListener('click', this.close.bind(this));
 		this.container.addEventListener('click', this.close.bind(this));
 		this._content.addEventListener('click', (event) => event.stopPropagation());
@@ -30,28 +27,34 @@ export class modalView extends Component<IModalData> {
 		this._content.replaceChildren(value);
 	}
 
-	open() {
-		this.container.classList.add('modal_active');
-		this.events.emit('modal:open');
-	}
-
-	close() {
-		this.container.classList.remove('modal_active');
-		this.content = null;
-		this.events.emit('modal:close');
-	}
-
 	render(data: IModalData): HTMLElement {
 		super.render(data);
 		this.open();
 		return this.container;
 	}
 
-	set locked(value: boolean) {
-		if (value) {
-			this._wrapper.classList.add('page__wrapper_locked');
-		} else {
-			this._wrapper.classList.remove('page__wrapper_locked');
+	protected _toggleModal(state: boolean = true) {
+		this.toggleClass(this.container, 'modal_active', state);
+	}
+	// Обработчик в виде стрелочного метода, чтобы не терять контекст `this`
+	protected _handleEscape = (evt: KeyboardEvent) => {
+		if (evt.key === 'Escape') {
+			this.close();
 		}
+	};
+
+	open() {
+		this._toggleModal(); // открываем
+		// навешиваем обработчик при открытии
+		document.addEventListener('keydown', this._handleEscape);
+		this.events.emit('modal:open');
+	}
+
+	close() {
+		this._toggleModal(false); // закрываем
+		// правильно удаляем обработчик при закрытии
+		document.removeEventListener('keydown', this._handleEscape);
+		this.content = null;
+		this.events.emit('modal:close');
 	}
 }

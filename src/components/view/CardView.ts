@@ -14,6 +14,13 @@ export class CardView extends Component<ICard> {
 	protected events: IEvents;
 	protected _cardId: string;
 	protected index: HTMLElement;
+	protected _categoryColor = <Record<string, string>>{
+		'софт-скил': 'soft',
+		другое: 'other',
+		дополнительное: 'additional',
+		кнопка: 'button',
+		'хард-скил': 'hard',
+	};
 
 	constructor(protected container: HTMLElement, events: IEvents) {
 		super(container);
@@ -43,53 +50,43 @@ export class CardView extends Component<ICard> {
 	}
 
 	renderIndex(index: number) {
-		this.index.textContent = index.toString();
+		this.setText(this.index, index.toString());
 	}
 
 	protected setPrice(value: number | null): string {
 		if (value === null) {
 			if (this._button) {
-				this._button.setAttribute('disabled', '');
-				this._button.textContent = 'Не продается';
+				this.setDisabled(this._button, true);
+				this.setText(this._button, 'Не продается');
 			}
 			return 'Бесценно';
 		}
 		return String(value) + ' синапсов';
 	}
 
-	protected setCategory(category: string) {
-		if (category === 'софт-скил') {
-			this._category.classList.add('card__category_soft');
-		} else if (category === 'другое') {
-			this._category.classList.add('card__category_other');
-		} else if (category === 'дополнительное') {
-			this._category.classList.add('card__category_additional');
-		} else if (category === 'кнопка') {
-			this._category.classList.add('card__category_button');
-		} else if (category === 'хард-скил') {
-			this._category.classList.add('card__category_hard');
-		}
+	set category(value: string) {
+		this.setText(this._category, value);
+		this.toggleClass(
+			this._category,
+			`card__category_${this._categoryColor[value]}`,
+			true
+		);
 	}
 
 	set image(link: string) {
-		this._image.src = CDN_URL + link;
+		this.setImage(this._image, CDN_URL + link, this.title);
 	}
 
 	set title(title: string) {
-		this._title.textContent = title;
-	}
-
-	set category(category: string) {
-		this.setCategory(category);
-		this._category.textContent = category;
+		this.setText(this._title, title);
 	}
 
 	set price(price: number | null) {
-		this._price.textContent = this.setPrice(price);
+		this.setText(this._price, this.setPrice(price));
 	}
 
 	set description(description: string) {
-		this._description.textContent = description;
+		this.setText(this._description, description);
 	}
 
 	set id(id: string) {

@@ -36,17 +36,17 @@ export class BasketView extends Component<IBaketView> {
 	}
 
 	renderHeaderBasketCounter(value: number) {
-		this.headerBasketCounter.textContent = value.toString();
+		this.setText(this.headerBasketCounter, value.toString());
 	}
 
 	set basketPrice(price: number) {
 		if (!price) {
 			this.setDisabled(this.basketButton, true);
-			this._cardsList.textContent = 'Корзина пуста';
+			this.setText(this._cardsList, 'Корзина пуста');
 		} else {
 			this.setDisabled(this.basketButton, false);
 		}
-		this._basketPrice.textContent = price.toString() + ' синапсов';
+		this.setText(this._basketPrice, price.toString() + ' синапсов');
 	}
 
 	set items(items: HTMLElement[]) {

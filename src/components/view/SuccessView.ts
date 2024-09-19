@@ -21,6 +21,6 @@ export class SuccessView extends Component<ISuccess> {
 	}
 
 	set fullSum(value: number) {
-		this._fullSum.textContent = 'Списано ' + value.toString() + ' синапсов';
+		this.setText(this._fullSum, 'Списано ' + value.toString() + ' синапсов');
 	}
 }

@@ -1,18 +1,18 @@
 import './scss/styles.scss';
 import { API_URL } from './utils/constants';
 import { ICard, TFormPay, TFormUser } from './types';
-import { CardView } from './components/view/CardImage';
+import { CardView } from './components/view/CardView';
 import { cloneTemplate } from './utils/utils';
 import { EventEmitter } from './components/base/events';
-import { FormModel } from './components/ModalData/FormModel';
-import { CardsContainer } from './components/view/Page';
-import { modalView } from './components/view/ModalView';
+import { FormModel } from './components/ModelData/FormModel';
+import { Page } from './components/view/Page';
+import { ModalView } from './components/view/ModalView';
 import { BasketView } from './components/view/BasketView';
 import { FormView } from './components/view/FormView';
 import { SuccessView } from './components/view/SuccessView';
-import { ModelApi } from './components/ModalData/ModelApi';
-import { CardsModel } from './components/ModalData/CardsModel';
-import { Basket } from './components/ModalData/Basket';
+import { ModelApi } from './components/ModelData/ModelApi';
+import { CardsModel } from './components/ModelData/CardsModel';
+import { Basket } from './components/ModelData/Basket';
 
 const gallery: HTMLElement = document.querySelector('.gallery');
 const pageCardTemplate = document.querySelector(
@@ -39,11 +39,11 @@ const events = new EventEmitter();
 const cardsModel = new CardsModel(events);
 const api = new ModelApi(API_URL);
 const basket = new Basket(events);
-const modal = new modalView(document.querySelector('#modal-container'), events);
+const modal = new ModalView(document.querySelector('#modal-container'), events);
 const form = new FormModel(events);
 const success = new SuccessView(cloneTemplate(successTemplate), events);
 const basketView = new BasketView(cloneTemplate(basketTemplate), events);
-const cardsContainer = new CardsContainer(gallery);
+const page = new Page(gallery);
 const orderForm = new FormView(cloneTemplate(orderFormTemplate), events);
 const contactForm = new FormView(cloneTemplate(contactFormTemplate), events);
 
@@ -68,7 +68,7 @@ events.on('cards:loaded', () => {
 			category: card.category,
 		});
 	});
-	cardsContainer.render({ catalog: cardsArray });
+	page.render({ catalog: cardsArray });
 });
 
 events.on('card:open', (data: { card: CardView }) => {
@@ -200,9 +200,9 @@ events.on('success', () => {
 });
 
 events.on('modal:open', () => {
-	modal.locked = true;
+	page.locked = true;
 });
 
 events.on('modal:close', () => {
-	modal.locked = false;
+	page.locked = false;
 });
